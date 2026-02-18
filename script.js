@@ -1,8 +1,8 @@
 addEventListener('fetch', event => {
-      event.respondWith(handleRequest(event.request))
+      event.respondWith(handleRequest(event.request, event.env))
 })
 
-async function handleRequest(request) {
+async function handleRequest(request, env) {
       const url = new URL(request.url)
 
       let targetUrl = url.searchParams.get('url')
@@ -34,11 +34,22 @@ async function handleRequest(request) {
       }
 
       try {
-            const response = await fetch(targetUrl, {
-                  method: request.method,
-                  headers: request.headers,
-                  body: request.body
-            })
+            let response;
+            if (targetUrl.includes(`moxfield`)) {
+                  response = await fetch(targetUrl, {
+                        method: request.method,
+                        headers: {
+                              'User-Agent': env.moxfieldAgent
+                        },
+                        body: request.body
+                  });
+            } else {
+                  response = await fetch(targetUrl, {
+                        method: request.method,
+                        headers: request.headers,
+                        body: request.body
+                  });
+            }
 
             const corsHeaders = {
                   'Access-Control-Allow-Origin': '*',
