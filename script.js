@@ -1,6 +1,6 @@
 export default {
       async fetch(request, env, ctx) {
-            handleRequest(request, env);
+            return handleRequest(request, env);
       },
 };
 // addEventListener('fetch', event => {
